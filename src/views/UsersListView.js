@@ -12,6 +12,18 @@ class UsersListView extends Component {
   showUserDetails (id) {
     this.props.history.push(`/users/${id}`)
   }
+  async createUser () {
+    try {
+      const requestParams = { method: 'POST', mode: 'cors' }
+      const user = await window.fetch('https://cryptic-fjord-69206.herokuapp.com/users', requestParams).then((res) => res.json())
+      const newUsersState = this.state.users
+      newUsersState.push(user)
+      this.setState({users: newUsersState})
+    } catch (error) {
+      console.log('error :', error)
+      this.setState({error: 'Failed to load users'})
+    }
+  }
   render () {
     let content = ''
     const users = this.state.users
@@ -20,25 +32,28 @@ class UsersListView extends Component {
     } else if (users) {
       const cellStyle = {border: '1px solid black', padding: '10px'}
       content = (
-        <table style={{border: '1px solid black', borderCollapse: 'collapse'}}>
-          <thead>
-            <tr>
-              <th style={cellStyle}>ID</th>
-              <th style={cellStyle}>Joined at</th>
-              <th style={cellStyle}>Details</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.map((user) => {
-              return (
-                <tr key={user._id}>
-                  <td style={cellStyle}>{user._id}</td>
-                  <td style={cellStyle}>{user.joinedAt}</td>
-                  <td style={cellStyle} onClick={(e) => { this.showUserDetails(user._id) }}>View Details</td>
-                </tr>)
-            })}
-          </tbody>
-        </table>
+        <div>
+          <table style={{border: '1px solid black', borderCollapse: 'collapse'}}>
+            <thead>
+              <tr>
+                <th style={cellStyle}>ID</th>
+                <th style={cellStyle}>Joined at</th>
+                <th style={cellStyle}>Details</th>
+              </tr>
+            </thead>
+            <tbody>
+              {users.map((user) => {
+                return (
+                  <tr key={user._id}>
+                    <td style={cellStyle}>{user._id}</td>
+                    <td style={cellStyle}>{new Date(user.joinedAt).toLocaleString('fr-FR')}</td>
+                    <td style={cellStyle} onClick={(e) => { this.showUserDetails(user._id) }}>View Details</td>
+                  </tr>)
+              })}
+            </tbody>
+          </table>
+          <button type='button' onClick={() => { this.createUser() }}>Add User !</button>
+        </div>
       )
     } else {
       content = (<p>Loading ... </p>)
@@ -54,6 +69,10 @@ class UsersListView extends Component {
     try {
       const requestParams = { method: 'GET', mode: 'cors' }
       const users = await window.fetch('https://cryptic-fjord-69206.herokuapp.com/users', requestParams).then((res) => res.json())
+      // Un petit tri par date de création pour s'y retrouver...
+      users.sort((a, b) => {
+        return new Date(a.joinedAt).getTime() > new Date(b.joinedAt).getTime()
+      })
       this.setState({users: users})
     } catch (error) {
       console.log('error :', error)
