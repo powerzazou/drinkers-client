@@ -12,6 +12,9 @@ class UsersListView extends Component {
   showUserDetails (id) {
     this.props.history.push(`/users/${id}`)
   }
+  goToUserUpdateView (id) {
+    this.props.history.push(`/users/update/${id}`)
+  }
   async createUser () {
     try {
       const requestParams = { method: 'POST', mode: 'cors' }
@@ -61,6 +64,7 @@ class UsersListView extends Component {
                 <th style={cellStyle}>ID</th>
                 <th style={cellStyle}>Joined at</th>
                 <th style={cellStyle}>Details</th>
+                <th style={cellStyle}>Update</th>
                 <th style={cellStyle}>Delete</th>
               </tr>
             </thead>
@@ -71,6 +75,7 @@ class UsersListView extends Component {
                     <td style={cellStyle}>{user._id}</td>
                     <td style={cellStyle}>{new Date(user.joinedAt).toLocaleString('fr-FR')}</td>
                     <td style={cellStyle} onClick={(e) => { this.showUserDetails(user._id) }}>View Details</td>
+                    <td style={cellStyle} onClick={(e) => { this.goToUserUpdateView(user._id) }}>Update</td>
                     <td style={cellStyle} onClick={(e) => { this.deleteUser(user) }}>Delete</td>
                   </tr>)
               })}
