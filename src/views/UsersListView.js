@@ -21,7 +21,29 @@ class UsersListView extends Component {
       this.setState({users: newUsersState})
     } catch (error) {
       console.log('error :', error)
-      this.setState({error: 'Failed to load users'})
+      this.setState({error: 'Failed to add user'})
+    }
+  }
+  async deleteUser (user) {
+    try {
+      const requestParams = {
+        method: 'DELETE',
+        mode: 'cors',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `beer1=${user.beer1}&beer2=${user.beer2}`
+      }
+      const response = await window.fetch(`https://cryptic-fjord-69206.herokuapp.com/users/${user._id}`, requestParams).then((res) => res)
+      console.log(response.status)
+      if (response.status !== 200) {
+        throw new Error('failed to remove user')
+      }
+      const newUsersState = this.state.users
+      // On enlève l'user de la liste ...
+      newUsersState.splice(newUsersState.findIndex((u) => u._id === user._id), 1)
+      this.setState({users: newUsersState})
+    } catch (error) {
+      console.log('error :', error)
+      this.setState({error: 'Failed to remove user'})
     }
   }
   render () {
@@ -39,6 +61,7 @@ class UsersListView extends Component {
                 <th style={cellStyle}>ID</th>
                 <th style={cellStyle}>Joined at</th>
                 <th style={cellStyle}>Details</th>
+                <th style={cellStyle}>Delete</th>
               </tr>
             </thead>
             <tbody>
@@ -48,6 +71,7 @@ class UsersListView extends Component {
                     <td style={cellStyle}>{user._id}</td>
                     <td style={cellStyle}>{new Date(user.joinedAt).toLocaleString('fr-FR')}</td>
                     <td style={cellStyle} onClick={(e) => { this.showUserDetails(user._id) }}>View Details</td>
+                    <td style={cellStyle} onClick={(e) => { this.deleteUser(user) }}>Delete</td>
                   </tr>)
               })}
             </tbody>

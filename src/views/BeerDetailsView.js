@@ -10,8 +10,8 @@ class BeerDetailsComponent extends PureComponent {
       <div>
         <p>{this.props.label}</p>
         <ul>
-          {Object.keys(beerDetails).map((detail) => {
-            return <li>{detail}: {beerDetails[detail]}</li>
+          {Object.keys(beerDetails).map((detail, index) => {
+            return <li key={index}>{detail}: {beerDetails[detail]}</li>
           })}
         </ul>
       </div>

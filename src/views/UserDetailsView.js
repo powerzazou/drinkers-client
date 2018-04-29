@@ -22,8 +22,8 @@ class UserDetailsView extends Component {
         <div>
           <p>ID: {details._id}</p>
           <p>Joined At : {details.joinedAt}</p>
-          {['beer1', 'beer2'].map((beerKey) => {
-            return <BeerDetailsView label={beerKey} properties={details[beerKey]} />
+          {['beer1', 'beer2'].map((beerKey, index) => {
+            return <BeerDetailsView key={index} label={beerKey} properties={details[beerKey]} />
           })}
         </div>
       )
