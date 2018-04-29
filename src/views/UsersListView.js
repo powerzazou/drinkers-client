@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { withRouter } from 'react-router-dom'
 
 class UsersListView extends Component {
   constructor (props) {
@@ -7,6 +8,9 @@ class UsersListView extends Component {
       users: null,
       error: false
     }
+  }
+  showUserDetails (id) {
+    this.props.history.push(`/users/${id}`)
   }
   render () {
     let content = ''
@@ -17,17 +21,23 @@ class UsersListView extends Component {
       const cellStyle = {border: '1px solid black', padding: '10px'}
       content = (
         <table style={{border: '1px solid black', borderCollapse: 'collapse'}}>
-          <tr>
-            <th style={cellStyle}>ID</th>
-            <th style={cellStyle}>joined at</th>
-          </tr>
-          {users.map((user) => {
-            return (
-              <tr>
-                <td style={cellStyle}>{user._id}</td>
-                <td style={cellStyle}>{user.joinedAt}</td>
-              </tr>)
-          })}
+          <thead>
+            <tr>
+              <th style={cellStyle}>ID</th>
+              <th style={cellStyle}>Joined at</th>
+              <th style={cellStyle}>Details</th>
+            </tr>
+          </thead>
+          <tbody>
+            {users.map((user) => {
+              return (
+                <tr key={user._id}>
+                  <td style={cellStyle}>{user._id}</td>
+                  <td style={cellStyle}>{user.joinedAt}</td>
+                  <td style={cellStyle} onClick={(e) => { this.showUserDetails(user._id) }}>View Details</td>
+                </tr>)
+            })}
+          </tbody>
         </table>
       )
     } else {
@@ -35,7 +45,7 @@ class UsersListView extends Component {
     }
     return (
       <div>
-        <h2>User List</h2>
+        <h2>Users List</h2>
         {content}
       </div>
     )
@@ -52,4 +62,4 @@ class UsersListView extends Component {
   }
 }
 
-export default UsersListView
+export default withRouter(UsersListView)
